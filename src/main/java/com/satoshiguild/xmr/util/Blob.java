@@ -23,35 +23,24 @@
  */
 package com.satoshiguild.xmr.util;
 
-import org.junit.Test;
+public class Blob {
+    private byte[] data;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import static org.junit.Assert.assertArrayEquals;
-
-public class MoneroTest {
-    @Test
-    public void testCryptonight() {
-        new BufferedReader(new InputStreamReader(MoneroTest.class.getResourceAsStream("./cryptonight-tests.txt")))
-                .lines()
-                .filter(line -> !line.startsWith("#"))
-                .forEach(line -> {
-                    String[] parts = line.split(" ");
-                    int variant = Integer.parseInt(parts[0]);
-                    byte[] expected = hexStringToByteArray(parts[1]);
-                    byte[] data = hexStringToByteArray(parts[2]);
-                    assertArrayEquals(expected, Monero.cryptonight(data, variant));
-                });
+    public Blob(byte[] data) {
+        this.data = data;
     }
 
-    private static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                    + Character.digit(s.charAt(i+1), 16));
-        }
+    public native byte[] getHashingBlob();
+
+    public int getVersion() {
+        return this.data[0];
+    }
+
+    public byte[] getHash() {
+        return Cryptonight.slowHash(this.data, getVersion() - 6);
+    }
+
+    public byte[] getData() {
         return data;
     }
 }

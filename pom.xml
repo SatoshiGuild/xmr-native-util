@@ -53,7 +53,15 @@
                                     <arg value="-classpath" />
                                     <arg value="${project.build.outputDirectory}" />
                                     <arg value="-force" />
-                                    <arg value="com.satoshiguild.xmr.util.Monero" />
+                                    <arg value="com.satoshiguild.xmr.util.Cryptonight" />
+                                </exec>
+                                <exec executable="javah">
+                                    <arg value="-d" />
+                                    <arg value="${project.basedir}/src/main/c" />
+                                    <arg value="-classpath" />
+                                    <arg value="${project.build.outputDirectory}" />
+                                    <arg value="-force" />
+                                    <arg value="com.satoshiguild.xmr.util.Blob" />
                                 </exec>
                                 <exec executable="make" />
                             </target>

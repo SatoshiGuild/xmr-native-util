@@ -21,24 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#include <jni.h>
-#include <stdio.h>
+package com.satoshiguild.xmr.util;
 
-#include "com_satoshiguild_xmr_util_Monero.h"
-
-extern void cn_slow_hash(const void *data, size_t length, char *hash, int variant, int prehashed);
-
-JNIEXPORT void JNICALL Java_com_satoshiguild_xmr_util_Monero_cryptonight
-  (JNIEnv *env, jclass cls, jbyteArray in, jbyteArray out, jint variant) {
-  jsize inLen = (*env)->GetArrayLength(env, in);
-  // jsize outLen = (*env)->GetArrayLength(env, out);
-  jbyte *inData = (*env)->GetByteArrayElements(env, in, 0);
-  jbyte *outData = (*env)->GetByteArrayElements(env, out, 0);
-
-  cn_slow_hash((char *) inData, inLen, (char *) outData, variant, 0);
-
-  (*env)->ReleaseByteArrayElements(env, in, inData, JNI_ABORT);
-  (*env)->ReleaseByteArrayElements(env, out, outData, 0);
-
-  return;
+class TestUtil {
+    static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
 }

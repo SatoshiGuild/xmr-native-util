@@ -23,20 +23,27 @@
  */
 package com.satoshiguild.xmr.util;
 
-public class Monero {
-    static {
-        try {
-            LibraryLoader.loadLibrary("monero");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import static com.satoshiguild.xmr.util.TestUtil.hexStringToByteArray;
+import static org.junit.Assert.assertArrayEquals;
+
+public class CryptonightTest {
+    @Test
+    public void testCryptonight() {
+        new BufferedReader(new InputStreamReader(CryptonightTest.class.getResourceAsStream("./cryptonight-tests.txt")))
+                .lines()
+                .filter(line -> !line.startsWith("#"))
+                .forEach(line -> {
+                    String[] parts = line.split(" ");
+                    int variant = Integer.parseInt(parts[0]);
+                    byte[] expected = hexStringToByteArray(parts[1]);
+                    byte[] data = hexStringToByteArray(parts[2]);
+                    assertArrayEquals(expected, Cryptonight.slowHash(data, variant));
+                });
     }
 
-    public static native void cryptonight(byte[] in, byte[] out, int variant);
-
-    public static byte[] cryptonight(byte[] in, int variant) {
-        byte[] ret = new byte[32];
-        cryptonight(in, ret, variant);
-        return ret;
-    }
 }

@@ -3,6 +3,7 @@
 ## Features
 
 * CryptoNight hashes (both variants)
+* Block blob manipulation
 
 ## Requirements
 
@@ -20,7 +21,8 @@
     cd $_
     cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 ..
     make -j$(nproc)
-    sudo cp src/crypto/libcncrypto.so /usr/local/lib/
+    cd src
+    sudo find . -iname "*.so" -not -iname "libversion.so" -exec cp -- "{}" /usr/lib \;
 
 (running unit tests)
 
