@@ -24,6 +24,14 @@
 package com.satoshiguild.xmr.util;
 
 public class Blob {
+    static {
+        try {
+            LibraryLoader.loadLibrary("monero");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private byte[] data;
 
     public Blob(byte[] data) {
