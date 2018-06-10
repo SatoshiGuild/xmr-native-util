@@ -62,8 +62,11 @@ JNIEXPORT jbyteArray JNICALL Java_com_satoshiguild_xmr_util_Blob_getHashingBlob
   std::string output;
   block bl = { 0 };
 
-  // TODO: handle invalid block blob
-  parse_and_validate_block_from_blob(input, bl);
+  if (!parse_and_validate_block_from_blob(input, bl)) {
+    jclass ex = env->FindClass("com/satoshiguild/xmr/util/InvalidBlobException");
+    env->ThrowNew(ex, "Invalid blob");
+    return NULL;
+  }
   output = get_block_hashing_blob(bl);
 
   // create return array
