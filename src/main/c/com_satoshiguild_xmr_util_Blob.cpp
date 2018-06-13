@@ -46,35 +46,26 @@ namespace cryptonote {
 
 using namespace cryptonote;
 
-JNIEXPORT jbyteArray JNICALL Java_com_satoshiguild_xmr_util_Blob_getHashingBlob
-  (JNIEnv *env, jobject obj) {
-  jclass cls = env->GetObjectClass(obj);
+JNIEXPORT jbyteArray JNICALL Java_com_satoshiguild_xmr_util_Blob_convertBlob
+  (JNIEnv *env, jclass cls, jbyteArray bData) {
+    jsize dataLen = env->GetArrayLength(bData);
+    jbyte *data = env->GetByteArrayElements(bData, nullptr);
 
-  // get blob data
-  jfieldID oDataID = env->GetFieldID(cls, "data", "[B");
-  jobject oData = env->GetObjectField(obj, oDataID);
-  jbyteArray bData = reinterpret_cast<jbyteArray>(oData);
-  jsize dataLen = env->GetArrayLength(bData);
-  jbyte *data = env->GetByteArrayElements(bData, nullptr);
+    std::string input(reinterpret_cast<char *>(data), dataLen);
+    std::string output;
+    block bl = { 0 };
 
-  // cryptonote magic
-  std::string input(reinterpret_cast<char *>(data), dataLen);
-  std::string output;
-  block bl = { 0 };
-
-  if (!parse_and_validate_block_from_blob(input, bl)) {
+    if (!parse_and_validate_block_from_blob(input, bl)) {
     jclass ex = env->FindClass("com/satoshiguild/xmr/util/InvalidBlobException");
     env->ThrowNew(ex, "Invalid blob");
     return NULL;
-  }
-  output = get_block_hashing_blob(bl);
+    }
+    output = get_block_hashing_blob(bl);
 
-  // create return array
-  jbyteArray ret = env->NewByteArray(output.size());
-  env->SetByteArrayRegion(ret, 0, output.size(), reinterpret_cast<const jbyte *>(output.data()));
+    jbyteArray ret = env->NewByteArray(output.size());
+    env->SetByteArrayRegion(ret, 0, output.size(), reinterpret_cast<const jbyte *>(output.data()));
 
-  // cleanup
-  env->ReleaseByteArrayElements(bData, data, JNI_ABORT);
+    env->ReleaseByteArrayElements(bData, data, JNI_ABORT);
 
-  return ret;
+    return ret;
 }

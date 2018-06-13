@@ -32,23 +32,5 @@ public class Blob {
         }
     }
 
-    private byte[] data;
-
-    public Blob(byte[] data) {
-        this.data = data;
-    }
-
-    public native byte[] getHashingBlob();
-
-    public int getVersion() {
-        return this.data[0];
-    }
-
-    public byte[] getHash() {
-        return Cryptonight.slowHash(this.data, getVersion() - 6);
-    }
-
-    public byte[] getData() {
-        return data;
-    }
+    public static native byte[] convertBlob(byte[] in);
 }
